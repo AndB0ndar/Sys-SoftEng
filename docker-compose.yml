@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: db_queue
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+
+  web:
+    build: .
+    command: sh -c "
+      python web_queue/manage.py makemigrations
+      && python web_queue/manage.py migrate
+      && python web_queue/manage.py runserver 0.0.0.0:8000
+      "
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
