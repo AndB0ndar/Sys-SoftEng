@@ -28,7 +28,7 @@ def create_queue(request):
 
 
 def queues(request):
-    user_queues = Queues.objects.filter(creator=request.user.userprofile)
+    user_queues = Queues.objects.filter(group=request.user.userprofile.group)
     return render(request, 'app_queue/queues.html', {'user_queues': user_queues})
 
 
@@ -72,7 +72,7 @@ def add_user(request, pk, user_id):
 
 
 def update_user(request, pk, user_id):
-    record = get_object_or_404(Queue, queue=pk, user=user_id)  # TODO: errror?
+    record = get_object_or_404(Queue, queue=pk, user=user_id)
     record.delete()
 
     record = get_max_position_record(pk)

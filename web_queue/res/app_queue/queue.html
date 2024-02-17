@@ -4,10 +4,10 @@
 {{ title }}
 {% endblock %}
 
-{%  block content %}
+{% block content %}
     <div class="container mt-5">
-        <h1>Users in Queue</h1>
-        <table>
+        <h1 class="mb-4">Users in Queue</h1>
+        <table class="table">
             <thead>
                 <tr>
                     <th>Position</th>
@@ -23,17 +23,18 @@
                 {% endfor %}
             </tbody>
         </table>
-        <form action="{% url 'delete_user' queue_pk user_pk %}" method="post" style="display: inline;">
+
+        <form action="{% url 'delete_user' queue_pk user_pk %}" method="post" class="d-inline">
             {% csrf_token %}
-            <button type="submit">Delete</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
         </form>
-        <form action="{% url 'add_user' queue_pk user_pk %}" method="post" style="display: inline;">
+        <form action="{% url 'add_user' queue_pk user_pk %}" method="post" class="d-inline">
             {% csrf_token %}
-            <button type="submit">Add</button>
+            <button type="submit" class="btn btn-success">Add</button>
         </form>
-        <form action="{% url 'update_user' queue_pk user_pk %}" method="post" style="display: inline;">
+        <form action="{% url 'update_user' queue_pk user_pk %}" method="post" class="d-inline">
             {% csrf_token %}
-            <button type="submit">Update</button>
+            <button type="submit" class="btn btn-primary">Update</button>
         </form>
     </div>
 {% endblock %}

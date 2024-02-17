@@ -46,7 +46,7 @@ class Queues(models.Model):
 
 
 class Queue(models.Model):
-    queue = models.OneToOneField(Queues, on_delete=models.CASCADE)
+    queue = models.ForeignKey(Queues, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     position = models.IntegerField()
 
