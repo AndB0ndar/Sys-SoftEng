@@ -6,5 +6,34 @@
 
 {%  block content %}
     <div class="container mt-5">
+        <h1>Users in Queue</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.position }}</td>
+                    <td>{{ record.user.first_name }} {{ record.user.last_name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <form action="{% url 'delete_user' queue_pk user_pk %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+        <form action="{% url 'add_user' queue_pk user_pk %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit">Add</button>
+        </form>
+        <form action="{% url 'update_user' queue_pk user_pk %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit">Update</button>
+        </form>
     </div>
 {% endblock %}

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 
 
 class StudyGroup(models.Model):
@@ -27,13 +28,25 @@ class UserProfile(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-class Queue(models.Model):
+class Queues(models.Model):
     name = models.CharField(max_length=100)
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
+    creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
     group = models.ForeignKey(StudyGroup, on_delete=models.CASCADE, null=True, blank=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
+
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def get_path(self):
+        return reverse('queue', args=[str(self.pk)])
+
     def __str__(self):
         return self.name
+
+
+class Queue(models.Model):
+    queue = models.OneToOneField(Queues, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    position = models.IntegerField()
+

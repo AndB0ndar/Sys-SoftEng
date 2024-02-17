@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import UserProfile, StudyGroup
+from .models import UserProfile, StudyGroup, Queues
 
 
 class UserRegistrationForm(forms.ModelForm):
@@ -44,3 +44,13 @@ class UserProfileForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+class QueuesForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(QueuesForm, self).__init__(*args, **kwargs)
+        self.fields['subject'].required = False
+
+    class Meta:
+        model = Queues
+        fields = ['name', 'group', 'subject', 'description']

@@ -6,5 +6,31 @@
 
 {%  block content %}
     <div class="container mt-5">
+        <a href="{% url 'create_queue' %}"><button>Add Queue</button></a>
+        <h1>Your Queues</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Group</th>
+                    <th>Subject</th>
+                    <th>Description</th>
+                    <th>Created At</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for queue in user_queues %}
+                <tr>
+                    <td>{{ queue.name }}</td>
+                    <td>{{ queue.group }}</td>
+                    <td>{{ queue.subject }}</td>
+                    <td>{{ queue.description }}</td>
+                    <td>{{ queue.created_at }}</td>
+                    <td><a href="{{ queue.get_path }}"><button>Go</button></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}
