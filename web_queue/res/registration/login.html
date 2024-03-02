@@ -19,6 +19,7 @@
                 <div class="card-body">
                     <h4 class="card-title text-center">Login</h4>
                     <form method="post">
+                        {% csrf_token %}
                         {% bootstrap_form form %}
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">Login</button>
