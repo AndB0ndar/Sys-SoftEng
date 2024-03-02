@@ -28,6 +28,7 @@ def create_queue(request):
 
 
 def queues(request):
+    print(request.user.userprofile.group)
     user_queues = Queues.objects.filter(group=request.user.userprofile.group)
     return render(request, 'app_queue/queues.html', {'user_queues': user_queues})
 
