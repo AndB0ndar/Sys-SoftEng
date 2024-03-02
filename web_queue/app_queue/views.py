@@ -35,6 +35,10 @@ def queues(request):
 
 def queue(request, pk):
     records = Queue.objects.filter(queue=pk)
+    pos = 0
+    for r in records:
+        pos = r.position = pos + 1
+
     records = sorted(records, key=lambda x: x.position)
     context = {
         'records': records,
