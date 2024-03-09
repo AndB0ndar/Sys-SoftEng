@@ -28,7 +28,6 @@ def create_queue(request):
 
 
 def queues(request):
-    print(request.user.userprofile.group)
     user_queues = Queues.objects.filter(group=request.user.userprofile.group)
     return render(request, 'app_queue/queues.html', {'user_queues': user_queues})
 
@@ -108,3 +107,19 @@ def register(request):
         profile_form = UserProfileForm()
     return render(request, 'registration/register.html', {'user_form': user_form, 'profile_form': profile_form})
 
+
+def profile(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            # Обновляем данные профиля пользователя
+            user_profile = form.save(commit=False)
+            user = request.user
+            user.username = form.cleaned_data['username']
+            user.save()
+            user_profile.save()
+            return redirect('user_profile')
+    else:
+        form = UserProfileForm(instance=user_profile, initial={'username': request.user.username})
+    return render(request, 'app_queue/profile.html', {'form': form})

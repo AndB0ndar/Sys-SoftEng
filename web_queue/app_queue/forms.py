@@ -27,10 +27,8 @@ class UserProfileForm(forms.ModelForm):
         cleaned_data = super().clean()
         group = cleaned_data.get('group')
         new_group_name = cleaned_data.get('new_group_name')
-
         if not group and not new_group_name:
             raise forms.ValidationError('You must choose an existing group or create a new one.')
-
         return cleaned_data
 
     def save(self, commit=True):
@@ -49,8 +47,7 @@ class UserProfileForm(forms.ModelForm):
 class QueuesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(QueuesForm, self).__init__(*args, **kwargs)
-        self.fields['subject'].required = False
 
     class Meta:
         model = Queues
-        fields = ['name', 'group', 'subject', 'description']
+        fields = ['name', 'group', 'description']

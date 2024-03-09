@@ -13,4 +13,5 @@ urlpatterns = [
     path('queue/<int:pk>/delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
     path('queue/<int:pk>/add-user/<int:user_id>/', views.add_user, name='add_user'),
     path('queue/<int:pk>/update-user/<int:user_id>/', views.update_user, name='update_user'),
+    path('profile/', views.profile, name='profile'),
 ]
