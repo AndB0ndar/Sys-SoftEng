@@ -1,3 +1,6 @@
 Django
 django-bootstrap-v5
 psycopg2-binary
+sphinx
+sphinxcontrib_django
+

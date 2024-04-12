@@ -7,10 +7,29 @@ from .models import Queues, Queue, UserProfile
 
 
 def home(request):
+    """
+    Displays the home page of the queue application.
+
+    Parameters:
+    - request: Django HttpRequest object.
+
+    Returns:
+    - HttpResponse object with the rendered template 'app_queue/home.html'.
+    """
     return render(request, 'app_queue/home.html')
 
 
 def create_queue(request):
+    """
+    Displays the queue creation page and handles the POST request to create a new queue.
+
+    Parameters:
+    - request: Django HttpRequest object.
+
+    Returns:
+    - If the request method is POST and the form is valid, creates a new queue and redirects to the queues list page.
+    - Otherwise, displays the queue creation form with an empty or pre-filled form.
+    """
     if request.method == 'POST':
         form = QueuesForm(request.POST)
         if form.is_valid():
@@ -28,11 +47,36 @@ def create_queue(request):
 
 
 def queues(request):
+    """
+    Displays a list of queues associated with the currently logged-in user's group.
+
+    Parameters:
+    - request: Django HttpRequest object.
+
+    Returns:
+    - HttpResponse object with the rendered template 'app_queue/queues.html',
+      including a dictionary containing 'user_queues' - the queues associated
+      with the user's group.
+    """
     user_queues = Queues.objects.filter(group=request.user.userprofile.group)
     return render(request, 'app_queue/queues.html', {'user_queues': user_queues})
 
 
 def queue(request, pk):
+    """
+    Displays the details of a specific queue identified by its primary key (pk).
+
+    Parameters:
+    - request: Django HttpRequest object.
+    - pk: Primary key of the queue to be displayed.
+
+    Returns:
+    - HttpResponse object with the rendered template 'app_queue/queue.html',
+      including a dictionary containing:
+        - 'records': A sorted list of records in the queue.
+        - 'queue_pk': The primary key of the queue being displayed.
+        - 'user_pk': The primary key of the currently logged-in user.
+    """
     records = Queue.objects.filter(queue=pk)
     pos = 0
     for r in records:
@@ -48,6 +92,15 @@ def queue(request, pk):
 
 
 def get_max_position_record(queue_id):
+    """
+    Retrieves the record with the maximum position in the specified queue.
+
+    Parameters:
+    - queue_id: ID of the queue for which the maximum position record is to be retrieved.
+
+    Returns:
+    - The record with the maximum position in the specified queue, or None if the queue is empty.
+    """
     max_position_record = Queue.objects.filter(queue_id=queue_id).aggregate(Max('position'))
     max_position = max_position_record['position__max']
     if max_position is not None:
@@ -58,12 +111,38 @@ def get_max_position_record(queue_id):
 
 
 def delete_user(request, pk, user_id):
+    """
+    Deletes a specific user from a queue.
+
+    Parameters:
+    - request: Django HttpRequest object.
+    - pk: Primary key of the queue from which the user should be deleted.
+    - user_id: ID of the user to be deleted from the queue.
+
+    Returns:
+    - Redirects to the 'queue' view for the same queue (specified by pk) after
+      deleting the user. If the queue does not exist or the user is not found
+      in the queue, returns a HTTP 404 Not Found error.
+    """
     record = get_object_or_404(Queue, queue=pk, user=user_id)
     record.delete()
     return redirect('queue', pk=pk)
 
 
 def add_user(request, pk, user_id):
+    """
+    Adds a user to a queue.
+
+    Parameters:
+    - request: Django HttpRequest object.
+    - pk: Primary key of the queue to which the user should be added.
+    - user_id: ID of the user to be added to the queue.
+
+    Returns:
+    - Redirects to the 'queue' view for the same queue (specified by pk) after
+      adding the user. If the queue does not exist or the user is already in the queue,
+      or an error occurs while determining the position, redirects back to the 'queue' view.
+    """
     record = get_max_position_record(pk)
     if record is not None:
         if record.user.pk == user_id:
@@ -76,6 +155,19 @@ def add_user(request, pk, user_id):
 
 
 def update_user(request, pk, user_id):
+    """
+    Updates the position of a user in a queue by deleting and re-adding them.
+
+    Parameters:
+    - request: Django HttpRequest object.
+    - pk: Primary key of the queue in which the user's position should be updated.
+    - user_id: ID of the user whose position in the queue should be updated.
+
+    Returns:
+    - Redirects to the 'queue' view for the same queue (specified by pk) after
+      updating the user's position. If the queue does not exist or the user is not found
+      in the queue, returns an HTTP 404 Not Found error.
+    """
     record = get_object_or_404(Queue, queue=pk, user=user_id)
     record.delete()
 
@@ -90,6 +182,17 @@ def update_user(request, pk, user_id):
 
 
 def register(request):
+    """
+    Handles user registration process.
+
+    Parameters:
+    - request: Django HttpRequest object.
+
+    Returns:
+    - If the request method is POST and both user and profile forms are valid,
+      registers the user, logs them in, and redirects to the 'home' page.
+    - Otherwise, renders the registration form with empty or pre-filled forms.
+    """
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         profile_form = UserProfileForm(request.POST)
@@ -109,6 +212,17 @@ def register(request):
 
 
 def profile(request):
+    """
+    Displays and handles updates to the user's profile.
+
+    Parameters:
+    - request: Django HttpRequest object.
+
+    Returns:
+    - If the request method is POST and the form is valid, updates the user's profile
+      data and redirects to the 'user_profile' page.
+    - Otherwise, renders the profile form with the user's current profile data.
+    """
     user_profile = UserProfile.objects.get(user=request.user)
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=user_profile)
